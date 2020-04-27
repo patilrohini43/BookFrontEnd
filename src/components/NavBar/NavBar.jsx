@@ -11,14 +11,10 @@ import Fab from '@material-ui/core/Fab';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Zoom from '@material-ui/core/Zoom';
 import Badge from '@material-ui/core/Badge';
-import MailIcon from '@material-ui/icons/Mail';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
-
-import styles from '../NavBar/NavBar.module.scss';
-
-
+import BookApp from '../BookApp/BookApp.jsx';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -168,7 +164,7 @@ export default function BackToTop(props) {
             </AppBar>
             <Toolbar id="back-to-top-anchor" />
             <Container>
-                {/* <Movie /> */}
+                    < BookApp />
             </Container>
             <ScrollTop {...props}>
                 <Fab color="secondary" size="small" aria-label="scroll back to top">
