@@ -15,6 +15,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import BookApp from '../BookApp/BookApp.jsx';
+import BookList from '../BookApp/BookList.jsx';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -164,7 +165,7 @@ export default function BackToTop(props) {
             </AppBar>
             <Toolbar id="back-to-top-anchor" />
             <Container>
-                    < BookApp />
+                    < BookList />
             </Container>
             <ScrollTop {...props}>
                 <Fab color="secondary" size="small" aria-label="scroll back to top">

@@ -16,6 +16,13 @@ flex-direction: column;
     background-color:#f6f3f3;
 }
 
+.cardMainDiv{
+    display: flex;
+    flex-direction: row;
+    margin-top: 2%;
+    justify-content: space-between;
+}
+
 .actionCard{
     display: flex;
     flex-direction: column;
@@ -55,11 +62,15 @@ flex-direction: column;
 
 @media only screen and (max-width: 599px) {
     .mainCard{
-        width: 45%;
+        width: 60%;
     }
 
     .button{
         font-size: 6px;
+    }
+    .cardMainDiv{
+        flex-direction:column;
+        column-gap: 2%;
     }
   }
 
