@@ -1,0 +1,65 @@
+.mainDiv{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap:wrap;
+    row-gap: 2%;
+}
+
+.mainCard{
+margin-top: 2%;
+//max-width: 18%;
+display: flex;
+flex-direction: column;
+}
+
+.cardMediaDiv{
+    background-color:#f6f3f3;
+}
+
+.actionCard{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.mediaCard{
+    width: 11em;
+    height: 15em;
+}
+.cardContent{
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+
+}
+
+.button{
+    //background-color: brown;
+    font-size: 10px;
+}
+
+.titleCard{
+    width: 35em;
+    height: 15em;
+
+}
+
+// .titleCard{
+//     visibility: hidden;
+// }
+
+// .cardMediaDiv:hover + .titleCard {
+//     visibility: visible;
+//     color: red;
+//   }
+
+@media only screen and (max-width: 599px) {
+    .mainCard{
+        width: 45%;
+    }
+
+    .button{
+        font-size: 6px;
+    }
+  }
+
