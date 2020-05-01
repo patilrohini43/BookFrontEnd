@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -11,11 +11,10 @@ import Fab from '@material-ui/core/Fab';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Zoom from '@material-ui/core/Zoom';
 import Badge from '@material-ui/core/Badge';
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
-import BookApp from '../BookApp/BookApp.jsx';
 import BookList from '../BookApp/BookList.jsx';
+import * as httpService from '/home/rohini/Pictures/Reactproject/bookstore/src/service/httpService.js'
+import SerachBook from '../SearchBooks/SearchBook.jsx';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -25,6 +24,7 @@ const useStyles = makeStyles(theme => ({
     },
     title: {
         display: 'none',
+        marginRight:'4em',
         [theme.breakpoints.up('sm')]: {
             display: 'block',
         },
@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
     },
 
     bookImage: {
-        width: '21%',
+        width: '25%',
     },
     searchIcon: {
         padding: theme.spacing(0, 2),
@@ -134,6 +134,21 @@ ScrollTop.propTypes = {
 
 export default function BackToTop(props) {
     const classes = useStyles();
+    const [movies,setMovies] =useState([]);
+    const [serachValue,setSearchValue]=useState('')
+
+    const search = searchValue =>{
+        console.log("search"+searchValue)
+        httpService.getAxios(`bookname/searchBook/${searchValue}`)
+        .then(response =>{
+            console.log(response.data)
+            setMovies(response.data)
+            setSearchValue(true)
+            props.demo(response.data)
+        }
+        )
+    }
+
     return (
         <React.Fragment>
             <CssBaseline />
@@ -143,21 +158,9 @@ export default function BackToTop(props) {
                         <div className={classes.leftDiv}>
                             {/* <div> <img className={classes.bookImage} src={require(`/home/rohini/Pictures/Reactproject/bookstore/src/images/book.svg`)} alt="item" /></div> */}
                             <div className={classes.bookDiv}>
-                                <div style={{marginRight:'-4em'}}><img className={classes.bookImage} src={require(`/home/rohini/Pictures/Reactproject/bookstore/src/images/book.svg`)} alt="item" />   </div>
+                                <div style={{marginRight:'-3em'}}><img className={classes.bookImage} src={require(`/home/rohini/Pictures/Reactproject/bookstore/src/images/book.svg`)} alt="item" />   </div>
                                 <Typography className={classes.title} variant="h6">BookStore</Typography></div>
-                            <div className={classes.search}>
-                                <div className={classes.searchIcon}>
-                                    <SearchIcon />
-                                </div>
-                                <InputBase
-                                    placeholder="Search…"
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInput,
-                                    }}
-                                    inputProps={{ 'aria-label': 'search' }}
-                                />
-                            </div>
+                            <SerachBook search={search}/>
                         </div>
                         <div style={{marginTop:'0.3%'}}><Badge badgeContent={4} color="primary"> <Typography variant="subtitle1">Cart</Typography><ShoppingCartOutlinedIcon /></Badge></div>
                     </div>
@@ -165,7 +168,9 @@ export default function BackToTop(props) {
             </AppBar>
             <Toolbar id="back-to-top-anchor" />
             <Container>
-                    < BookList />
+            
+                    {/* < BookList  movies={movies} serachValue={serachValue} /> */}
+ 
             </Container>
             <ScrollTop {...props}>
                 <Fab color="secondary" size="small" aria-label="scroll back to top">

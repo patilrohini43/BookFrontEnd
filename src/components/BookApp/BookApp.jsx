@@ -1,8 +1,6 @@
 
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -40,9 +38,7 @@ class BookApp extends React.Component {
     }
 
     render() {
-        //let itemList=this.props
-        // console.log("Hiiiii"+itemList)
-        console.log(this.props.value.bookName+"props value")
+       var url=`http://localhost:8081/bookname/bookListImages/${this.props.value.bookId}`
         return ( 
             // <div style={{display:'flex',flexDirection:'row',marginTop:'2%'}}>
             <div className={styles.mainDiv}>
@@ -50,11 +46,13 @@ class BookApp extends React.Component {
             ? <Card className={styles.titleCard} onMouseLeave={this.mouseLeave}>{this.props.value.bookDetail}</Card>
             :<Card className={styles.mainCard} >
                 <div className={styles.cardMediaDiv} onMouseEnter={this.mouseEnter} >
-                <CardMedia
+                {/* <CardMedia
                         style={{ height: '9em', width: '7em' ,display:'-webkit-inline-box',marginTop:'1em'}}
-                        image={require('/home/rohini/Pictures/Reactproject/bookstore/src/images/java.jpeg')}
+                        image={require(`${this.props.image}`)}
                         title="Contemplative Reptile"
-                    />
+                    /> */}
+
+               <img  style={{ height: '9em', width: '7em' ,display:'-webkit-inline-box',marginTop:'1em'}} src={url} alt="item" /> 
                  </div>
                 
                     <CardContent className={styles.cardContent}>
