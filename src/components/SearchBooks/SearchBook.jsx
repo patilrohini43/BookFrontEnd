@@ -129,9 +129,10 @@ class SearchBook extends React.Component
     render(){
         return(
            
-            <div>
+           
             <div className={styles.search}>
-                <button value="hello!" onClick={this.getSearchList}><SearchIcon /></button>
+                <div onClick={this.getSearchList} style={{marginLeft:'2%'}}><SearchIcon className={styles.SearchIcon} /></div>
+                {/* <button value="hello!" onClick={this.getSearchList}><SearchIcon /></button> */}
                 <InputBase
                  placeholder="Search…"
                  type="text"
@@ -145,11 +146,7 @@ class SearchBook extends React.Component
                 inputProps={{ 'aria-label': 'search' }}
                 />
              </div>
-             {/* {
-                 this.state.searchData.map(item=> <BookApp key={item.bookId} value={item} />)
-             } */}
-             </div>
-           
+        
         )
     }
 }

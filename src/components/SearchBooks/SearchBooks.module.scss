@@ -36,3 +36,15 @@
         // },
     }
 
+    .SearchIcon{
+        margin-top: 0.3em;
+        color: #707070;
+    }
+
+
+    @media only screen and (max-width: 599px) {
+      .search{
+          width: 15em;
+      }
+      }
+

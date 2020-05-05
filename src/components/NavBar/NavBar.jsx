@@ -15,6 +15,8 @@ import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import BookList from '../BookApp/BookList.jsx';
 import * as httpService from '/home/rohini/Pictures/Reactproject/bookstore/src/service/httpService.js'
 import SerachBook from '../SearchBooks/SearchBook.jsx';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -66,6 +68,10 @@ const useStyles = makeStyles(theme => ({
 
     bookImage: {
         width: '25%',
+    },
+    navBar:{
+        width:'100%',
+        backgroundColor:'black',
     },
     searchIcon: {
         padding: theme.spacing(0, 2),
@@ -162,21 +168,23 @@ export default function BackToTop(props) {
                                 <Typography className={classes.title} variant="h6">BookStore</Typography></div>
                             <SerachBook search={search}/>
                         </div>
-                        <div style={{marginTop:'0.3%'}}><Badge badgeContent={4} color="primary"> <Typography variant="subtitle1">Cart</Typography><ShoppingCartOutlinedIcon /></Badge></div>
+                        <div style={{marginTop:'0.3%'}}><Badge badgeContent={4} color="primary"> <Typography variant="subtitle1">Cart</Typography><ShoppingCartOutlinedIcon onClick={event =>  window.location.href='/viewCart'} /></Badge></div>
                     </div>
                 </Toolbar>
+                
             </AppBar>
             <Toolbar id="back-to-top-anchor" />
             <Container>
-            
                     {/* < BookList  movies={movies} serachValue={serachValue} /> */}
  
             </Container>
+            
             <ScrollTop {...props}>
                 <Fab color="secondary" size="small" aria-label="scroll back to top">
                     <KeyboardArrowUpIcon />
                 </Fab>
             </ScrollTop>
         </React.Fragment>
+        
     );
 }

@@ -5,6 +5,8 @@ import NavBar from './components/NavBar/NavBar.jsx'
 import BookApp from './components/BookApp/BookApp';
 import BookList from './components/BookApp/BookList'
 import SearchBook from './components/SearchBooks/SearchBook';
+import Footbar from './components/FooterBar/FootBar';
+import BookCart from './components/Cart/BookCart';
 
 function App() {
 
@@ -25,8 +27,13 @@ function App() {
       </div>
     <Router>
      <Route path="/book"><BookList  valueData={valueData}  serachValue={serachValue} /></Route>
-     {/* <Route path="/Search"><SearchBook /></Route> */}
+     <Route path="/search"><SearchBook /></Route>
+     <Route path="/viewCart"><BookCart /></Route>
    </Router>
+    <div >
+      <Footbar />
+      </div>
+   
     </div>
   );
 }

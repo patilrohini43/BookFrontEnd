@@ -13,3 +13,15 @@ const baseUrl='http://localhost:8081/'
       },
     })
   }
+
+  export function postAxios(url)
+  {
+     const URL = baseUrl+url;
+    return axios(URL, {
+      method: 'POST',
+     // data:'',
+      headers: {
+        'content-type': 'application/json', 
+      },
+    })
+  }

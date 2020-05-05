@@ -5,6 +5,28 @@
     row-gap: 2%;
 }
 
+.mainDivCard{
+    margin-top: 2%;
+    display: flex;
+    padding-right: 3em;
+    padding-left: 3em;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.formControl{
+    width: 20em;
+    font-size: 7px;
+}
+
+.buttonBack{
+    display: flex;
+    justify-content: flex-start;
+}
+.navBar{
+    width: 100%;
+    background-color: black;
+}
 .mainCard{
 margin-top: 2em;
 display: flex;
