@@ -31,10 +31,10 @@ const useStyles = makeStyles(theme => ({
     },
     dividerFullWidth: {
         margin: `5px 0 0 ${theme.spacing(2)}px`,
-      },
-      dividerInset: {
+    },
+    dividerInset: {
         margin: `5px 0 0 ${theme.spacing(9)}px`,
-      },
+    },
 
     cardAction: {
         display: 'flex',
@@ -58,7 +58,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop:'2%'
+        marginTop: '2%'
         // '& > *': {
         //   margin: theme.spacing(1),
         //   width:'100%',
@@ -106,11 +106,15 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         justifyContent: 'flex-start',
     },
+    orderTitle:{
+        display:'flex',
+        justifyContent:'flex-start',
+    },
     pos: {
         marginBottom: 12,
     },
 }));
-export default function BookCart() {
+export default function Checkout() {
     const classes = useStyles();
     const [count, setCount] = useState(0);
     const [cartData, setCartData] = useState([]);
@@ -121,12 +125,13 @@ export default function BookCart() {
     const [value, setValue] = React.useState({
         addressId: ''
     });
+    const[orderId,setOrderID]=useState('')
     const [error, setError] = React.useState(false);
     const [helperText, setHelperText] = React.useState('Choose wisely');
 
 
     useEffect(() => {
-        getCart()
+       // getCart()
         getAddressDetail()
     }, [])
 
@@ -136,18 +141,38 @@ export default function BookCart() {
     };
 
 
-    function getCart() {
-        httpService.getAxios('cart/getAllCart/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.SkJVXXp-unSNovqHE14ml3Kw7fcoLxLIdu4DZ5DLotQ')
-            .then((response) => {
-                console.log(response)
-                console.log(response.data)
-                response.data.map((item => {
-                    localStorage.setItem('cartId',item.id)
-                    setCartData(item.items)
-                }))
-            }).catch(function (error) {
-                console.log(error);
+    // function getCart() {
+    //     httpService.getAxios('cart/getAllCart/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.SkJVXXp-unSNovqHE14ml3Kw7fcoLxLIdu4DZ5DLotQ')
+    //         .then((response) => {
+    //             console.log(response)
+    //             console.log(response.data)
+    //             response.data.map((item => {
+    //                 setCartData(item.items)
+    //             }))
+    //         }).catch(function (error) {
+    //             console.log(error);
+    //         })
+    // }
+
+    function getOrderDetails(orderId){
+        console.log(orderId)
+        httpService.get('order?orderId='+orderId)
+        .then((response) => {
+            console.log(response)
+            console.log(response.data)
+            setCartData(response.data)
+            response.data.map((item)=>{
+                console.log(item.cart.items)
+                item.cart.items.map((items)=>{
+                    console.log(items.book)
+                    items.book.map((data)=>{
+                       console.log(data.bookId)
+                   })
+                })
             })
+        }).catch(function (error) {
+            console.log(error);
+        })
     }
 
     function getAddressDetail() {
@@ -184,7 +209,7 @@ export default function BookCart() {
                 setOpen(true)
                 setMessage(response.data.statusMessage)
             })
-        getCart()
+       // getCart()
     }
 
     const decrementCount = (id) => {
@@ -194,7 +219,7 @@ export default function BookCart() {
                 setOpen(true)
                 setMessage(response.data.statusMessage)
             })
-        getCart()
+       // getCart()
     }
 
     const addCustomerDetails = (data) => {
@@ -208,6 +233,21 @@ export default function BookCart() {
             })
     }
 
+    const createOrder=()=>{
+       var cartId=localStorage.getItem('cartId')
+        console.log(cartId+"address"+value.addressId)
+        httpService.post('order?addressId='+value.addressId+'&cartId='+cartId, null)
+        .then((response) => {
+            console.log(response)
+            console.log(response.data.statusMessage)
+            setOpen(true)
+            setOpenForm(true)
+            setMessage(response.data.statusMessage)
+            getOrderDetails(response.data.token)
+        }).catch(function (error) {
+            console.log(error);
+        })
+    }
     function showForm() {
         setOpenForm(true)
     }
@@ -219,12 +259,76 @@ export default function BookCart() {
     return (
         <div className={classes.mainDiv}>
             <div><div className={classes.buttonBack}><Tooltip title="Go Back" arrow><Button onClick={goBack}>Back <b></b></Button></Tooltip></div>
+                <div className={classes.customerDiv}>
+                    <Card className={classes.root}>
+                        <CardContent>
+                            <Typography variant="subtitle2">Delivery Address</Typography>
+                            {
+                                customerData.map((item, key) =>
+                                    <div>
+                                        <div className={classes.paper} key={key}>
+                                            <div className={classes.buttonDiv}>
+                                                <RadioGroup aria-label="quiz" name="addressId" value={value.addressId} >
+                                                    <FormControlLabel name="addressId"
+                                                        onClick={handleRadioChange}
+                                                        key={String(item.addressId)}
+                                                        value={String(item.addressId)}
+                                                        control={<Radio color="primary" />}
+                                                    // control={<Radio />}
+                                                    />
+                                                </RadioGroup>
+                                                <div className={classes.typoDiv}>
+                                                    <div className={classes.typo2Div}>
+                                                        <Typography variant="subtitle2" gutterBottom style={{ marginRight: '2em' }}>Name:<Typography variant="caption" gutterBottom style={{ marginRight: '2em' }}>{item.name}</Typography></Typography>
+
+                                                    </div>
+                                                    <div className={classes.typoDiv}>
+                                                        <Typography variant="subtitle2" gutterBottom >Type:<Typography variant="caption" gutterBottom style={{ marginRight: '2em' }}>{item.type}</Typography></Typography>
+                                                        <Typography variant="subtitle2" gutterBottom>Mobile Phone:<Typography variant="caption" gutterBottom >{item.mobileNumber}</Typography></Typography>
+                                                        <Typography variant="subtitle2" gutterBottom>Address<Typography variant="caption" gutterBottom >{item.address}</Typography></Typography>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <Button size="small">Edit</Button>
+                                            </div>
+                                        </div>
+                                        <Divider variant="middle" />
+                                    </div>
+
+                                )
+                            }
+
+                        </CardContent>
+                        <CardActions className={classes.cardAction}>
+                            <Button size="small" variant="contained" color="primary" style={{ width: '27%' }} onClick={createOrder}>Continue</Button>
+                        </CardActions>
+                    </Card>
+                </div>
+                <div className={classes.customerDiv}>
+                    <Card className={classes.root}>
+                        <CardContent>
+                            <CustomerDetails addCustomerDetails={addCustomerDetails} />
+                        </CardContent>
+                        {/* <CardActions className={classes.cardAction}>
+                            <Button size="small" variant="contained" color="primary" style={{ width: '27%' }}>Learn More</Button>
+                        </CardActions> */}
+                    </Card>
+                </div>
 
                 <div>
                     <Card className={classes.root} >
                         <CardContent className={classes.cardContent}>
-                            <Typography className={classes.titleCart} variant="h6" gutterBottom>My Cart </Typography>
-                            <div>
+                            <Typography className={classes.titleCart} variant="h6" gutterBottom>Order Summary </Typography>
+                             {
+                                 cartData.map((item, key) =>{
+                                     console.log(item.orderId)
+                                 }
+                                 
+                                )}
+                           
+                            {/* <div>
                                 {
                                     cartData.map((item, key) =>
                                         <div className={classes.image} key={key}>
@@ -253,7 +357,7 @@ export default function BookCart() {
 
                                         </div>
                                     )}
-                            </div>
+                            </div> */}
 
                         </CardContent>
                         <CardActions className={classes.cardAction}>
@@ -262,6 +366,7 @@ export default function BookCart() {
                     </Card>
 
                 </div>
+
             </div>
             <Snackbar
                 anchorOrigin={{

@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import styles from '../BookApp/BookApp.module.scss';
 import * as httpService from '/home/rohini/Pictures/Reactproject/bookstore/src/service/httpService.js'
 import Snackbar from '@material-ui/core/Snackbar';
+import Pagination from '@material-ui/lab/Pagination';
 
 class BookApp extends React.Component {
     constructor(props) {
@@ -70,9 +71,11 @@ class BookApp extends React.Component {
 
 
     render() {
+       // var url=`https://books.google.com/books/content?id=Wj81DwAAQBAJ&printsec=frontcover&img=1&zoom=5%27`
         var url = `http://localhost:8081/bookname/bookListImages/${this.props.value.bookId}`
         return (
             // <div style={{display:'flex',flexDirection:'row',marginTop:'2%'}}>
+            <div>
             <div className={styles.mainDiv}>
                 {this.state.isVisible
                     ? <Card className={styles.titleCard} onMouseLeave={this.mouseLeave}>{this.props.value.bookDetail}</Card>
@@ -115,7 +118,8 @@ class BookApp extends React.Component {
                     onClose={() => this.setState({open: false})}
                 />
             </div>
-
+            </div>
+        
         )
     }
 }

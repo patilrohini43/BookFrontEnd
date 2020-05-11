@@ -2,16 +2,14 @@ import React from 'react'
 import BookApp from './BookApp';
 import * as httpService from '/home/rohini/Pictures/Reactproject/bookstore/src/service/httpService.js'
 import FormControl from '@material-ui/core/FormControl';
-import NativeSelect from '@material-ui/core/NativeSelect';
 import Typography from '@material-ui/core/Typography';
-import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import styles from '../BookApp/BookApp.module.scss';
 import Tooltip from '@material-ui/core/Tooltip';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
-
+import Pagination from '@material-ui/lab/Pagination';
 
 
 class BookList extends React.Component {
@@ -27,62 +25,90 @@ class BookList extends React.Component {
             imageData: [],
             sortLowToHigh: [],
             image: '',
-            selectValue: ""
+            selectValue: "",
+            activePage: 1,
+            totalPages: null,
+            itemsCountPerPage: null,
+            totalItemsCount: null
+
         }
         //console.log("this list"+this.props.movies)
         console.log("this list" + this.props.valueData)
         this.handleChange = this.handleChange.bind(this);
+        this.handlePageChange = this.handlePageChange.bind(this);
         this.goBack = this.goBack.bind(this);
     }
 
     componentDidMount() {
-        httpService.getAxios('bookname/bookList')
-            .then((response) => {
-                console.log(response.data)
-                this.setState({
-                    bookData: response.data
-                })
-                console.log(this.state.bookData + "data")
-            }).catch(function (error) {
-                console.log(error);
+        var token = `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.SkJVXXp-unSNovqHE14ml3Kw7fcoLxLIdu4DZ5DLotQ`
+        localStorage.setItem('token', token);
+         this.getBook(this.state.activePage)
+    }
+
+     getBook(page){
+        httpService.getAxios(`bookname/bookList?page=${page}&size=8`)
+        .then((response) => {
+            console.log(response.data)
+            const totalPages = response.data.totalPages;
+            const itemsCountPerPage = response.data.size;
+            const totalItemsCount = response.data.totalElements;
+
+            this.setState({ totalPages: totalPages })
+            this.setState({ totalItemsCount: totalItemsCount })
+            this.setState({ itemsCountPerPage: itemsCountPerPage })
+
+            this.setState({
+                bookData: response.data.content
             })
+            console.log(this.state.bookData + "data")
+        }).catch(function (error) {
+            console.log(error);
+        })
+
     }
 
 
 
     handleChange = (event) => {
-        var newValue=event.target.value
+        var newValue = event.target.value
         this.setState({
             selectValue: newValue
         },
-        () => {
-            console.log(this.state.selectValue+"=============00000")
-            if (this.state.selectValue === "low") {
-                console.log("trueeeee")
-                let sortedProductsAsc;
-                sortedProductsAsc = this.state.bookData.sort((a, b) => {
-                    console.log(a.bookId + "===========")
-                    return parseInt(a.price) - parseInt(b.price);
-                })
-                this.setState({
-                    bookData: sortedProductsAsc
-                })
-            }else if(this.state.selectValue === "high"){
-                let sortedProductsDes;
-                sortedProductsDes = this.state.bookData.sort((a, b) => {
-                    console.log(a.bookId + "===========")
-                    return parseInt(b.price) - parseInt(a.price);
-                })
-                this.setState({
-                    bookData: sortedProductsDes
-                })
-            }
-        })
+            () => {
+                console.log(this.state.selectValue + "=============00000")
+                if (this.state.selectValue === "low") {
+                    console.log("trueeeee")
+                    let sortedProductsAsc;
+                    sortedProductsAsc = this.state.bookData.sort((a, b) => {
+                        console.log(a.bookId + "===========")
+                        return parseInt(a.price) - parseInt(b.price);
+                    })
+                    this.setState({
+                        bookData: sortedProductsAsc
+                    })
+                } else if (this.state.selectValue === "high") {
+                    let sortedProductsDes;
+                    sortedProductsDes = this.state.bookData.sort((a, b) => {
+                        console.log(a.bookId + "===========")
+                        return parseInt(b.price) - parseInt(a.price);
+                    })
+                    this.setState({
+                        bookData: sortedProductsDes
+                    })
+                }
+            })
 
         console.log(this.state.selectValue + "==========" + event.target.value)
     }
 
-    goBack=()=>{
+
+  handlePageChange(event,value) {
+    console.log(value+"paaa");
+    this.setState({activePage: value})
+    this.getBook(value)
+    }
+
+    goBack = () => {
         window.location.reload(false);
     }
     render() {
@@ -90,8 +116,8 @@ class BookList extends React.Component {
         console.log(this.state.selectValue + "==========")
         console.log("this list" + this.props.valueData + "============" + this.props.serachValue)
         let itemList = this.state.bookData
-       // let sortData = this.state.sortLowToHigh
-       // console.log(sortData+"sooooo")
+        // let sortData = this.state.sortLowToHigh
+        // console.log(sortData+"sooooo")
         let image = this.state.image
         console.log("item" + image)
         return (
@@ -99,9 +125,9 @@ class BookList extends React.Component {
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <div><Typography variant="h6" gutterBottom>Books <span style={{ fontSize: '10px', color: '#ACADAD' }}>(128 items)</span></Typography></div>
                     <div>
-                        <FormControl   className={styles.formControl}>    
-                        <InputLabel   style={{ fontSize: '12px' }} >Sort by relevance</InputLabel> 
-                        <Select
+                        <FormControl className={styles.formControl}>
+                            <InputLabel style={{ fontSize: '12px' }} >Sort by relevance</InputLabel>
+                            <Select
                                 value={this.state.selectValue}
                                 style={{ fontSize: '12px' }}
                                 onChange={this.handleChange}
@@ -116,12 +142,12 @@ class BookList extends React.Component {
                     </div>
                 </div>
                 {/* <div > */}
-                <div styles={{display:'flex',flexDirection:'row',justifyContent:'flex-start'}}>
-                {this.props.serachValue
-                       ?<div className={styles.buttonBack}><Tooltip title="Go Back" arrow><Button onClick={this.goBack}>Back <b></b></Button></Tooltip></div> 
-                       :null
-                   } 
-                   
+                <div styles={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
+                    {this.props.serachValue
+                        ? <div className={styles.buttonBack}><Tooltip title="Go Back" arrow><Button onClick={this.goBack}>Back <b></b></Button></Tooltip></div>
+                        : null
+                    }
+
                 </div>
                 {this.props.serachValue
                     ? <div className={styles.cardMainDiv}>
@@ -131,6 +157,18 @@ class BookList extends React.Component {
                         {itemList.map(item => <BookApp key={item.id} value={item} />)}
                     </div>
                 }
+                <div className={styles.pagination}>
+                    <Pagination
+                       // hideNavigation
+                        activePage={this.state.activePage}
+                        itemsCountPerPage={this.state.itemsCountPerPage}
+                        totalItemsCount={this.state.totalItemsCount}
+                         count={10} 
+                        itemClass='page-item'
+                        linkClass='btn btn-light'
+                        onChange={this.handlePageChange}
+                    />
+                </div>
             </div>
             // </div>
         )

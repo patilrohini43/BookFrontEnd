@@ -7,6 +7,7 @@ import BookList from './components/BookApp/BookList'
 import SearchBook from './components/SearchBooks/SearchBook';
 import Footbar from './components/FooterBar/FootBar';
 import BookCart from './components/Cart/BookCart';
+import Checkout from './components/OrderBook/Checkout';
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
      <Route path="/book"><BookList  valueData={valueData}  serachValue={serachValue} /></Route>
      <Route path="/search"><SearchBook /></Route>
      <Route path="/viewCart"><BookCart /></Route>
+     <Route path="/checkout"><Checkout /></Route>
    </Router>
     <div >
       <Footbar />
