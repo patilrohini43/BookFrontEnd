@@ -10,6 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import Pagination from '@material-ui/lab/Pagination';
+import { withRouter } from 'react-router-dom';
 
 
 class BookList extends React.Component {
@@ -109,21 +110,17 @@ class BookList extends React.Component {
     }
 
     goBack = () => {
-        window.location.reload(false);
+      const { history } = this.props;
+      if(history) history.push('/book');
     }
+    
     render() {
-
-        console.log(this.state.selectValue + "==========")
-        console.log("this list" + this.props.valueData + "============" + this.props.serachValue)
+        const { history } = this.props;     
         let itemList = this.state.bookData
-        // let sortData = this.state.sortLowToHigh
-        // console.log(sortData+"sooooo")
-        let image = this.state.image
-        console.log("item" + image)
         return (
             <div className={styles.mainDivCard}>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <div><Typography variant="h6" gutterBottom>Books <span style={{ fontSize: '10px', color: '#ACADAD' }}>(128 items)</span></Typography></div>
+                <div className={styles.bookcountDiv}>
+                    <div><Typography variant="h6" gutterBottom>Books <span style={{ fontSize: '10px', color: '#ACADAD' }}>(Showing 1 – {itemList.length} items of {this.state.totalItemsCount})</span></Typography></div>
                     <div>
                         <FormControl className={styles.formControl}>
                             <InputLabel style={{ fontSize: '12px' }} >Sort by relevance</InputLabel>
@@ -141,29 +138,17 @@ class BookList extends React.Component {
                         </FormControl>
                     </div>
                 </div>
-                {/* <div > */}
-                <div styles={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
-                    {this.props.serachValue
-                        ? <div className={styles.buttonBack}><Tooltip title="Go Back" arrow><Button onClick={this.goBack}>Back <b></b></Button></Tooltip></div>
-                        : null
-                    }
-
-                </div>
-                {this.props.serachValue
-                    ? <div className={styles.cardMainDiv}>
-                        {this.props.valueData.map(item => <BookApp key={item.id} value={item} />)}
-                    </div>
-                    : <div className={styles.cardMainDiv}>
+    
+                     <div className={styles.cardMainDiv}>
                         {itemList.map(item => <BookApp key={item.id} value={item} />)}
                     </div>
-                }
                 <div className={styles.pagination}>
                     <Pagination
                        // hideNavigation
                         activePage={this.state.activePage}
                         itemsCountPerPage={this.state.itemsCountPerPage}
                         totalItemsCount={this.state.totalItemsCount}
-                         count={10} 
+                         count={2} 
                         itemClass='page-item'
                         linkClass='btn btn-light'
                         onChange={this.handlePageChange}

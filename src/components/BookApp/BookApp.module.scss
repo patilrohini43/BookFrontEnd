@@ -6,12 +6,30 @@
 }
 
 .mainDivCard{
-    margin-top: 2%;
     display: flex;
-    padding-right: 12em;
-    padding-left: 12em;
+    padding-right: 11em;
+    padding-left: 11em;
     flex-direction: column;
     justify-content: space-around;
+}
+.outOfStockDiv{
+    display:flex;
+    justify-content: center;
+}
+.paper{
+    width: 10em;
+    height: 2em;
+    background-color: white;
+    position: absolute;
+    margin-top: 5em
+}
+
+.bookcountDiv{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-right: 3em;
+    padding-left:3em;
 }
 
 .pagination{
@@ -37,6 +55,8 @@
 margin-top: 2em;
 display: flex;
 flex-direction: column;
+//margin-right:2em;
+//margin-bottom: 2em
 }
 
 .cardMediaDiv{
@@ -121,9 +141,13 @@ flex-direction: column;
     }
     .mainDivCard{
        
-        padding-right: 3em;
-        padding-left: 3em;
+        padding-right: 1em;
+        padding-left: 1em;
      
+    }
+    .bookcountDiv{
+        padding-right: 0em;
+        padding-left:0em;
     }
   }
 

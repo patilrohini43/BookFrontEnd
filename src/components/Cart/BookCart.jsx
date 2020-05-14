@@ -10,14 +10,7 @@ import * as httpService from '/home/rohini/Pictures/Reactproject/bookstore/src/s
 import Snackbar from '@material-ui/core/Snackbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import { useHistory } from "react-router-dom"
-import CustomerDetails from '../CustomerForm/CustomerDetails';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormLabel from '@material-ui/core/FormLabel';
-import Divider from '@material-ui/core/Divider';
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -143,6 +136,7 @@ export default function BookCart() {
                 console.log(response.data)
                 response.data.map((item => {
                     localStorage.setItem('cartId',item.id)
+                    console.log(item.items.length)
                     setCartData(item.items)
                 }))
             }).catch(function (error) {

@@ -5,32 +5,31 @@ import NavBar from './components/NavBar/NavBar.jsx'
 import BookApp from './components/BookApp/BookApp';
 import BookList from './components/BookApp/BookList'
 import SearchBook from './components/SearchBooks/SearchBook';
+import SearchBookList from './components/SearchBooks/SearchBookList';
 import Footbar from './components/FooterBar/FootBar';
 import BookCart from './components/Cart/BookCart';
 import Checkout from './components/OrderBook/Checkout';
+import OrderPlace from './components/OrderStatus/OrderPlace';
 
 function App() {
 
-  const [valueData,setValueData]=useState([])
-  const [serachValue,setSearchValue]=useState('')
-
-  const demo = (value) =>{
-    setValueData(value)
-    setSearchValue(true)
-    console.log(valueData+"app value")
-
-    console.log("hiii")
-  }
+  
   return (
     <div className="App">
+      useEffect(() => {
+      document.title=`BookStore`
+    })
       <div>
-        <NavBar demo={demo} />
+        <NavBar />
       </div>
     <Router>
-     <Route path="/book"><BookList  valueData={valueData}  serachValue={serachValue} /></Route>
+     <Route path="/book"><BookList /></Route>
      <Route path="/search"><SearchBook /></Route>
      <Route path="/viewCart"><BookCart /></Route>
      <Route path="/checkout"><Checkout /></Route>
+     <Route path="/orderPlace"><OrderPlace /></Route>
+     <Route path="/searchBook"><SearchBookList /></Route>
+     
    </Router>
     <div >
       <Footbar />

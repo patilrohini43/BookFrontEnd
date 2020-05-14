@@ -1,10 +1,9 @@
 import React from 'react'
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
-import * as httpService from '/home/rohini/Pictures/Reactproject/bookstore/src/service/httpService.js'
 import styles from '../SearchBooks/SearchBooks.module.scss';
-import BookApp from '../BookApp/BookApp';
-import BookList from  '../BookApp/BookList.jsx';
+
+
 
 class SearchBook extends React.Component
 {
@@ -16,6 +15,7 @@ class SearchBook extends React.Component
         }
         this.handleChange = this.handleChange.bind(this)
         this.getSearchList = this.getSearchList.bind(this)
+       
     }
 
 
@@ -27,23 +27,17 @@ class SearchBook extends React.Component
             searchValue:name
           });
          console.log(this.state.searchValue)
+       //  window.location.href = `/searchBook/:`+this.state.searchValue
       }
     
 
-      getSearchList() {
+       getSearchList() {
         console.log(this.state.searchValue)
-        this.props.search(this.state.searchValue)
-        // httpService.getAxios(`bookname/searchBook/${this.state.searchValue}`)
-        // .then((response) =>{
-        //     console.log("Image"+response)
-        //     var item=JSON.parse(JSON.stringify(response.data))
-        //     console.log(item)
-        //     this.setState({
-        //         searchData:item
-        //     })
-        //     localStorage.setItem("searchData", JSON.stringify(this.state.searchData));
-        //     console.log(this.state.searchData)
-        // })
+        //const history=useHistory()
+      // this.props.history.push(`/searchBook/?name=`+this.state.searchValue)
+      
+        window.location.href = `/searchBook/?name=`+this.state.searchValue
+      // browserHistory.push( `/searchBook/?name=`+this.state.searchValue)
     }   
 
     render(){
@@ -52,11 +46,9 @@ class SearchBook extends React.Component
            
             <div className={styles.search}>
                 <div onClick={this.getSearchList} style={{marginLeft:'2%'}}><SearchIcon className={styles.SearchIcon} /></div>
-                {/* <button value="hello!" onClick={this.getSearchList}><SearchIcon /></button> */}
                 <InputBase
                  placeholder="Search…"
                  type="text"
-                // name="searchValue"
                  value={this.state.searchValue}
                  onChange={ this.handleChange }
                  className={{

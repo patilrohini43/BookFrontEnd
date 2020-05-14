@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect} from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -16,6 +16,7 @@ import BookList from '../BookApp/BookList.jsx';
 import * as httpService from '/home/rohini/Pictures/Reactproject/bookstore/src/service/httpService.js'
 import SerachBook from '../SearchBooks/SearchBook.jsx';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 const useStyles = makeStyles(theme => ({
@@ -138,21 +139,25 @@ ScrollTop.propTypes = {
     window: PropTypes.func,
 };
 
+
 export default function BackToTop(props) {
     const classes = useStyles();
-    const [movies,setMovies] =useState([]);
-    const [serachValue,setSearchValue]=useState('')
+    const[cartcount,setCartCount]=useState(0)
 
-    const search = searchValue =>{
-        console.log("search"+searchValue)
-        httpService.getAxios(`bookname/searchBook/${searchValue}`)
-        .then(response =>{
-            console.log(response.data)
-            setMovies(response.data)
-            setSearchValue(true)
-            props.demo(response.data)
-        }
-        )
+    useEffect(() => {
+       getCart()
+    }, [])
+
+
+    const getCart=()=> {
+        httpService.getAxios('cart/getAllCart/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.SkJVXXp-unSNovqHE14ml3Kw7fcoLxLIdu4DZ5DLotQ')
+            .then((response) => {
+                response.data.map((item => {
+                    setCartCount(item.items.length)
+                }))
+            }).catch(function (error) {
+                console.log(error);
+            })
     }
 
     return (
@@ -166,9 +171,10 @@ export default function BackToTop(props) {
                             <div className={classes.bookDiv}>
                                 <div style={{marginRight:'-3em'}}><img className={classes.bookImage} src={require(`/home/rohini/Pictures/Reactproject/bookstore/src/images/book.svg`)} alt="item" />   </div>
                                 <Typography className={classes.title} variant="h6">BookStore</Typography></div>
-                            <SerachBook search={search}/>
+                            <SerachBook />
                         </div>
-                        <div style={{marginTop:'0.3%'}}><Badge badgeContent={4} color="primary"> <Typography variant="subtitle1">Cart</Typography><ShoppingCartOutlinedIcon onClick={event =>  window.location.href='/viewCart'} /></Badge></div>
+                        <div style={{marginTop:'0.3%'}}><Badge badgeContent={cartcount} color="primary"> <Typography variant="subtitle1">Cart</Typography><ShoppingCartOutlinedIcon onClick={event =>  window.location.href='/viewCart'} /></Badge></div>
+        
                     </div>
                 </Toolbar>
                 
@@ -188,3 +194,6 @@ export default function BackToTop(props) {
         
     );
 }
+
+
+  

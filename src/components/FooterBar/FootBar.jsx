@@ -6,18 +6,27 @@ import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
     navBar:{
-        width:'100%',
+       // width:'100%',
         height: '5vh',
         backgroundColor:'#282c34',
-        marginTop:'45vh',
+        marginTop:'88vh',
     },
+    footTag:{
+        fontSize:'12px',
+        color:'white',
+        marginTop:'3%'
+    },
+    footerDiv:{
+        display:'flex',
+        justifyContent:'center'
+    }
 }));
 export default function Footbar(){
     const classes = useStyles();
     return(
         <BottomNavigation  className={classes.navBar}>
-        <div styles={{display:'flex',justifyContent:'center'}}>
-        <Typography variant="caption" display="block" color="white">CopyRight @Bridgelabz</Typography>
+        <div className={classes.footerDiv}>
+        <Typography variant="caption" display="block" className={classes.footTag}>CopyRight @Bridgelabz</Typography>
         </div>
     </BottomNavigation>
     )

@@ -18,6 +18,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormLabel from '@material-ui/core/FormLabel';
 import Divider from '@material-ui/core/Divider';
+import bookService from '/home/rohini/Pictures/Reactproject/bookstore/src/service/bookService';
 
 
 const useStyles = makeStyles(theme => ({
@@ -106,9 +107,9 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         justifyContent: 'flex-start',
     },
-    orderTitle:{
-        display:'flex',
-        justifyContent:'flex-start',
+    orderTitle: {
+        display: 'flex',
+        justifyContent: 'flex-start',
     },
     pos: {
         marginBottom: 12,
@@ -117,6 +118,7 @@ const useStyles = makeStyles(theme => ({
 export default function Checkout() {
     const classes = useStyles();
     const [count, setCount] = useState(0);
+    const [orderPrice, setOrderPrice] = useState([]);
     const [cartData, setCartData] = useState([]);
     const [customerData, setCustomerData] = useState([]);
     const [open, setOpen] = useState(false)
@@ -125,13 +127,13 @@ export default function Checkout() {
     const [value, setValue] = React.useState({
         addressId: ''
     });
-    const[orderId,setOrderID]=useState('')
+    const [orderId, setOrderID] = useState('')
     const [error, setError] = React.useState(false);
     const [helperText, setHelperText] = React.useState('Choose wisely');
 
 
     useEffect(() => {
-       // getCart()
+        // getCart()
         getAddressDetail()
     }, [])
 
@@ -154,29 +156,31 @@ export default function Checkout() {
     //         })
     // }
 
-    function getOrderDetails(orderId){
+    function getOrderDetails(orderId) {
         console.log(orderId)
-        httpService.get('order?orderId='+orderId)
-        .then((response) => {
-            console.log(response)
-            console.log(response.data)
-            setCartData(response.data)
-            response.data.map((item)=>{
-                console.log(item.cart.items)
-                item.cart.items.map((items)=>{
-                    console.log(items.book)
-                    items.book.map((data)=>{
-                       console.log(data.bookId)
-                   })
+        httpService.get('order?orderId=' + orderId)
+            .then((response) => {
+                console.log(response)
+                console.log(response.data)
+                setOrderPrice(response.data)
+               // setCartData(response.data)
+                response.data.map((item) => {
+                    console.log(item.cart.items)
+                    setCartData(item.cart.items)
+                    item.cart.items.map((items) => {
+                        console.log(items.cartId+"nooo"+JSON.stringify(items.book))
+                      console.log(items.book.bookId)
+                    })
                 })
+            }).catch(function (error) {
+                console.log(error);
             })
-        }).catch(function (error) {
-            console.log(error);
-        })
     }
 
     function getAddressDetail() {
-        httpService.get('user/addressList')
+       // httpService.get('user/addressList')
+       bookService.getAddress()
+            
             .then((response) => {
                 console.log(response)
                 console.log(response.data)
@@ -209,7 +213,7 @@ export default function Checkout() {
                 setOpen(true)
                 setMessage(response.data.statusMessage)
             })
-       // getCart()
+        // getCart()
     }
 
     const decrementCount = (id) => {
@@ -219,7 +223,7 @@ export default function Checkout() {
                 setOpen(true)
                 setMessage(response.data.statusMessage)
             })
-       // getCart()
+        // getCart()
     }
 
     const addCustomerDetails = (data) => {
@@ -233,23 +237,39 @@ export default function Checkout() {
             })
     }
 
-    const createOrder=()=>{
-       var cartId=localStorage.getItem('cartId')
-        console.log(cartId+"address"+value.addressId)
-        httpService.post('order?addressId='+value.addressId+'&cartId='+cartId, null)
+    const createOrder = () => {
+        var cartId = localStorage.getItem('cartId')
+        console.log(cartId + "address" + value.addressId)
+        httpService.post('order?addressId=' + value.addressId + '&cartId=' + cartId, null)
+            .then((response) => {
+                console.log(response)
+                console.log(response.data.statusMessage)
+                setOpen(true)
+                setOpenForm(true)
+                setMessage(response.data.statusMessage)
+                getOrderDetails(response.data.token)
+            }).catch(function (error) {
+                console.log(error);
+            })
+    }
+    function showForm() {
+        setOpenForm(true)
+    }
+
+  const OrderPlace=(orderId)=>{
+       // window.location.href = `/orderPlace`
+        console.log(orderId)
+        httpService.put('order?orderId='+orderId,null)
         .then((response) => {
             console.log(response)
             console.log(response.data.statusMessage)
             setOpen(true)
             setOpenForm(true)
             setMessage(response.data.statusMessage)
-            getOrderDetails(response.data.token)
+            window.location.href = `/orderPlace`
         }).catch(function (error) {
             console.log(error);
         })
-    }
-    function showForm() {
-        setOpenForm(true)
     }
 
     const history = useHistory();
@@ -262,7 +282,8 @@ export default function Checkout() {
                 <div className={classes.customerDiv}>
                     <Card className={classes.root}>
                         <CardContent>
-                            <Typography variant="subtitle2">Delivery Address</Typography>
+                           <Typography variant="subtitle2"className={classes.orderTitle} >Delivery Address</Typography>
+                         
                             {
                                 customerData.map((item, key) =>
                                     <div>
@@ -320,15 +341,9 @@ export default function Checkout() {
                 <div>
                     <Card className={classes.root} >
                         <CardContent className={classes.cardContent}>
-                            <Typography className={classes.titleCart} variant="h6" gutterBottom>Order Summary </Typography>
-                             {
-                                 cartData.map((item, key) =>{
-                                     console.log(item.orderId)
-                                 }
-                                 
-                                )}
-                           
-                            {/* <div>
+                            <Typography className={classes.titleCart} variant="subtitle2" gutterBottom>Order Summary </Typography>
+
+                            <div>
                                 {
                                     cartData.map((item, key) =>
                                         <div className={classes.image} key={key}>
@@ -342,14 +357,14 @@ export default function Checkout() {
                                                 <Typography variant="caption" display="block" color="textSecondary">{item.book.author}</Typography>
                                                 <Typography variant="caption" display="block" color="black">  Rs.{item.book.price}</Typography>
                                                 <div className={classes.buttonDiv}>
-                                                    <ButtonGroup size="small" aria-label="small outlined button group">
+                                                    {/* <ButtonGroup size="small" aria-label="small outlined button group">
                                                         <Button onClick={incrementCount.bind(null, item.cartId)}>+</Button>
 
                                                         <Button >{item.quantity}</Button>
 
                                                         <Button onClick={decrementCount.bind(null, item.cartId)}>-</Button>
-                                                    </ButtonGroup>
-
+                                                    </ButtonGroup> */}
+                                                     <Typography variant="caption" display="block" color="black">Quantity Item:{item.quantity}</Typography>
                                                     <Button size="small" style={{ marginLeft: '2%' }} onClick={removeCart.bind(null, item.cartId)}>Remove</Button>
 
                                                 </div>
@@ -357,12 +372,19 @@ export default function Checkout() {
 
                                         </div>
                                     )}
-                            </div> */}
+                            </div>
+                         
 
                         </CardContent>
+                        {
+                            orderPrice.map(item=>
+        
                         <CardActions className={classes.cardAction}>
-                            <Button size="small" variant="contained" color="primary" style={{ width: '27%' }}  onClick={event =>  window.location.href=`/checkout`}>Place Order</Button>
+                             <Typography  variant="subtitle2" gutterBottom>Total Price:{item.totalPrce}</Typography>
+                            <Button size="small" variant="contained" color="primary" style={{ width: '27%' }} onClick={OrderPlace.bind(null,item.orderId)}>Continue</Button>
                         </CardActions>
+                              )
+                            }
                     </Card>
 
                 </div>

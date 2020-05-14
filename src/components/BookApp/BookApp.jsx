@@ -10,6 +10,8 @@ import styles from '../BookApp/BookApp.module.scss';
 import * as httpService from '/home/rohini/Pictures/Reactproject/bookstore/src/service/httpService.js'
 import Snackbar from '@material-ui/core/Snackbar';
 import Pagination from '@material-ui/lab/Pagination';
+import { Paper } from '@material-ui/core';
+
 
 class BookApp extends React.Component {
     constructor(props) {
@@ -80,17 +82,13 @@ class BookApp extends React.Component {
                 {this.state.isVisible
                     ? <Card className={styles.titleCard} onMouseLeave={this.mouseLeave}>{this.props.value.bookDetail}</Card>
                     : <Card className={styles.mainCard} >
-                        <div className={styles.cardMediaDiv} onMouseEnter={this.mouseEnter} >
-                            {/* <CardMedia
-                        style={{ height: '9em', width: '7em' ,display:'-webkit-inline-box',marginTop:'1em'}}
-                        image={require(`${this.props.image}`)}
-                        title="Contemplative Reptile"
-                    /> */}
-
-                            <img style={{ height: '9em', width: '7em', display: '-webkit-inline-box', marginTop: '1em' }} src={url} alt="item" />
+                
+                        <div className={styles.cardMediaDiv} onMouseEnter={this.mouseEnter} >    
+                        <img style={{ height: '9em', width: '7em', display: '-webkit-inline-box', marginTop: '1em' }} src={url} alt="item" />
                         </div>
-
+                        
                         <CardContent className={styles.cardContent}>
+                        
                             <Typography variant="subtitle2">
                                 {this.props.value.bookName}
                             </Typography>

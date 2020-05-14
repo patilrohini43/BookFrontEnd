@@ -73,3 +73,17 @@ const baseUrl='http://localhost:8081/'
       },
     })
   }
+
+
+  export function put(url,data)
+  {
+     const URL = baseUrl+url;
+    return axios(URL, {
+      method: 'PUT',
+      data:data,
+      headers: {
+        'content-type': 'application/json', 
+        'token':localStorage.getItem('token')
+      },
+    })
+  }
