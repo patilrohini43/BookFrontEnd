@@ -83,6 +83,16 @@ class BookApp extends React.Component {
                     ? <Card className={styles.titleCard} onMouseLeave={this.mouseLeave}>{this.props.value.bookDetail}</Card>
                     : <Card className={styles.mainCard} >
                 
+                        { this.props.value.quantity != 0
+                        ?null
+                        :<div className={styles.outOfStockDiv}>
+                        <Paper elevation={3} className={styles.paper}>
+                        <Typography variant="overline" display="block" gutterBottom>Out Of Stock</Typography>
+                        </Paper>
+                    
+                       
+                        </div>
+                        }  
                         <div className={styles.cardMediaDiv} onMouseEnter={this.mouseEnter} >    
                         <img style={{ height: '9em', width: '7em', display: '-webkit-inline-box', marginTop: '1em' }} src={url} alt="item" />
                         </div>
@@ -100,7 +110,10 @@ class BookApp extends React.Component {
                             </Typography>
                         </CardContent>
                         <CardActions>
-                            <Button variant="outlined" style={{ backgroundColor: 'brown', width: '7em' }} onClick={this.addToCart.bind(this, this.props.value.bookId)}><span className={styles.button}>Add To Bag</span></Button>
+                            {this.props.value.quantity != 0
+                             ? <Button variant="outlined" style={{ backgroundColor: 'brown', width: '7em' }} onClick={this.addToCart.bind(this, this.props.value.bookId)}><span className={styles.button}>Add To Bag</span></Button>
+                             : <Button variant="outlined" style={{ backgroundColor: 'brown', width: '7em',opacity:'0.8' }} onClick={this.addToCart.bind(this, this.props.value.bookId)} disabled ><span className={styles.button}>Add To Bag</span></Button>
+                            }
                             <Button variant="outlined" style={{ width: '7em' }}><span className={styles.button}>WishList</span></Button>
                         </CardActions>
                     </Card>
