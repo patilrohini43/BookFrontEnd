@@ -27,7 +27,7 @@ class BookList extends React.Component {
             sortLowToHigh: [],
             image: '',
             selectValue: "",
-            activePage: 1,
+            activePage: 0,
             totalPages: null,
             itemsCountPerPage: null,
             totalItemsCount: null
@@ -47,7 +47,7 @@ class BookList extends React.Component {
     }
 
      getBook(page){
-        httpService.getAxios(`bookname/bookList?page=${page}&size=8`)
+        httpService.getAxios(`bookname/bookList?page=${page}&size=12`)
         .then((response) => {
             console.log(response.data)
             const totalPages = response.data.totalPages;
@@ -73,40 +73,23 @@ class BookList extends React.Component {
     handleChange = (event) => {
         var newValue = event.target.value
         this.setState({
-            selectValue: newValue
-        },
-            () => {
-                console.log(this.state.selectValue + "=============00000")
-                if (this.state.selectValue === "low") {
-                    console.log("trueeeee")
-                    let sortedProductsAsc;
-                    sortedProductsAsc = this.state.bookData.sort((a, b) => {
-                        console.log(a.bookId + "===========")
-                        return parseInt(a.price) - parseInt(b.price);
-                    })
-                    this.setState({
-                        bookData: sortedProductsAsc
-                    })
-                } else if (this.state.selectValue === "high") {
-                    let sortedProductsDes;
-                    sortedProductsDes = this.state.bookData.sort((a, b) => {
-                        console.log(a.bookId + "===========")
-                        return parseInt(b.price) - parseInt(a.price);
-                    })
-                    this.setState({
-                        bookData: sortedProductsDes
-                    })
-                }
-            })
-
-        console.log(this.state.selectValue + "==========" + event.target.value)
+            selectValue:newValue
+        })
+        console.log(newValue+"========"+this.state.activePage)
+        httpService.getAxios(`bookname/sort/${newValue}?limit=12&offset=${this.state.activePage-1}`)
+        .then((response) =>{
+            var item=JSON.parse(JSON.stringify(response.data.content))
+            this.setState({
+                                bookData: item
+                            })
+        })
     }
 
 
   handlePageChange(event,value) {
     console.log(value+"paaa");
     this.setState({activePage: value})
-    this.getBook(value)
+    this.getBook(value-1)
     }
 
     goBack = () => {
@@ -130,9 +113,9 @@ class BookList extends React.Component {
                                 onChange={this.handleChange}
 
                             >
-                                {/* <MenuItem value="" disabled style={{ fontSize: '12px' }}>Sort by relevance</MenuItem> */}
-                                <MenuItem value="low" style={{ fontSize: '12px' }}>Price:Low to High</MenuItem>
-                                <MenuItem value="high" style={{ fontSize: '12px' }}>Price:High to Low</MenuItem>
+
+                                <MenuItem value="LowToHigh" style={{ fontSize: '12px' }}>Price:Low to High</MenuItem>
+                                <MenuItem value="HighToLow" style={{ fontSize: '12px' }}>Price:High to Low</MenuItem>
                                 <MenuItem value="arrivals" style={{ fontSize: '12px' }}>Newest Arrivals</MenuItem>
                             </Select>
                         </FormControl>
@@ -148,7 +131,7 @@ class BookList extends React.Component {
                         activePage={this.state.activePage}
                         itemsCountPerPage={this.state.itemsCountPerPage}
                         totalItemsCount={this.state.totalItemsCount}
-                         count={2} 
+                         count={this.state.totalPages} 
                         itemClass='page-item'
                         linkClass='btn btn-light'
                         onChange={this.handlePageChange}

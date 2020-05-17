@@ -9,7 +9,7 @@ const useStyles = makeStyles(theme => ({
        // width:'100%',
         height: '5vh',
         backgroundColor:'#282c34',
-        marginTop:'88vh',
+      //  marginTop:'88vh',
     },
     footTag:{
         fontSize:'12px',

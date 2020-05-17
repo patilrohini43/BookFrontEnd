@@ -11,6 +11,7 @@ import * as httpService from '/home/rohini/Pictures/Reactproject/bookstore/src/s
 import Snackbar from '@material-ui/core/Snackbar';
 import Pagination from '@material-ui/lab/Pagination';
 import { Paper } from '@material-ui/core';
+import Popover from '@material-ui/core/Popover';
 
 
 class BookApp extends React.Component {
@@ -20,13 +21,30 @@ class BookApp extends React.Component {
             age: '',
             bookData: [],
             message: '',
+            anchor:'',
             open: false,
             isVisible: false,
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleClose = this.handleChange.bind(this)
+        this.handlePopoverOpen = this.handlePopoverOpen.bind(this);
+        this.handlePopoverClose = this.handlePopoverClose.bind(this);
 
     }
+
+
+
+     handlePopoverOpen = (event) => {
+         this.setState({
+             anchor:event.currentTarget
+         })
+      };
+    
+       handlePopoverClose = () => {
+        this.setState({
+            anchor:null
+        })
+      };
 
     handleChange = (event) => {
         this.setState({
@@ -55,7 +73,7 @@ class BookApp extends React.Component {
 
     addToCart = (value) => {
         console.log("book Id" + value)
-        httpService.postAxios('cart/addtoCart/' + value+"?cartId=73")
+        httpService.postAxios('cart/addtoCart/' + value + "?cartId=73")
             .then((response) => {
                 console.log(response.data)
                 console.log(response.data.statusMessage + "messss")
@@ -73,32 +91,63 @@ class BookApp extends React.Component {
 
 
     render() {
-       // var url=`https://books.google.com/books/content?id=Wj81DwAAQBAJ&printsec=frontcover&img=1&zoom=5%27`
+        const open = Boolean(this.state.anchor);
+        // var url=`https://books.google.com/books/content?id=Wj81DwAAQBAJ&printsec=frontcover&img=1&zoom=5%27`
         var url = `http://localhost:8081/bookname/bookListImages/${this.props.value.bookId}`
         return (
             // <div style={{display:'flex',flexDirection:'row',marginTop:'2%'}}>
             <div>
-            <div className={styles.mainDiv}>
-                {this.state.isVisible
-                    ? <Card className={styles.titleCard} onMouseLeave={this.mouseLeave}>{this.props.value.bookDetail}</Card>
-                    : <Card className={styles.mainCard} >
-                
-                        { this.props.value.quantity != 0
-                        ?null
-                        :<div className={styles.outOfStockDiv}>
-                        <Paper elevation={3} className={styles.paper}>
-                        <Typography variant="overline" display="block" gutterBottom>Out Of Stock</Typography>
-                        </Paper>
-                    
-                       
+
+    <div className={styles.mainDiv}>
+    <Popover
+        id="mouse-over-popover"
+        className={styles.popover}
+        classes={{
+          paper: styles.paper,
+        }}
+        open={open}
+        anchorEl={this.state.anchor}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        onClose={this.handlePopoverClose}
+        disableRestoreFocus
+      >
+       <div style={{padding:'2%'}}> 
+       <Typography variant="subtitle2" display="block" gutterBottom>Book Details</Typography>
+       <Typography variant="caption" display="block" gutterBottom>{this.props.value.bookDetail}</Typography>
+       </div>
+      </Popover>
+
+                    <Card className={styles.mainCard} >
+
+                        {this.props.value.quantity != 0
+                            ? null
+                            : <div className={styles.outOfStockDiv}>
+                                <Paper elevation={3} className={styles.paperClass}>
+                                    <Typography variant="overline" display="block" gutterBottom>Out Of Stock</Typography>
+                                </Paper>
+
+
+                            </div>
+                        }
+                        <div className={styles.cardMediaDiv} 
+                         aria-owns={open ? 'mouse-over-popover' : undefined}
+                         aria-haspopup="true"
+                         onMouseEnter={this.handlePopoverOpen}
+                         onMouseLeave={this.handlePopoverClose}
+                        >
+
+                            <img style={{ height: '9em', width: '7em', display: '-webkit-inline-box', marginTop: '1em' }} src={url} alt="item" />
                         </div>
-                        }  
-                        <div className={styles.cardMediaDiv} onMouseEnter={this.mouseEnter} >    
-                        <img style={{ height: '9em', width: '7em', display: '-webkit-inline-box', marginTop: '1em' }} src={url} alt="item" />
-                        </div>
-                        
+
                         <CardContent className={styles.cardContent}>
-                        
+
                             <Typography variant="subtitle2">
                                 {this.props.value.bookName}
                             </Typography>
@@ -111,26 +160,26 @@ class BookApp extends React.Component {
                         </CardContent>
                         <CardActions>
                             {this.props.value.quantity != 0
-                             ? <Button variant="outlined" style={{ backgroundColor: 'brown', width: '7em' }} onClick={this.addToCart.bind(this, this.props.value.bookId)}><span className={styles.button}>Add To Bag</span></Button>
-                             : <Button variant="outlined" style={{ backgroundColor: 'brown', width: '7em',opacity:'0.8' }} onClick={this.addToCart.bind(this, this.props.value.bookId)} disabled ><span className={styles.button}>Add To Bag</span></Button>
+                                ? <Button variant="outlined" style={{ backgroundColor: 'brown', width: '7em' }} onClick={this.addToCart.bind(this, this.props.value.bookId)}><span className={styles.button}>Add To Bag</span></Button>
+                                : <Button variant="outlined" style={{ backgroundColor: 'brown', width: '7em', opacity: '0.8' }} onClick={this.addToCart.bind(this, this.props.value.bookId)} disabled ><span className={styles.button}>Add To Bag</span></Button>
                             }
                             <Button variant="outlined" style={{ width: '7em' }}><span className={styles.button}>WishList</span></Button>
                         </CardActions>
                     </Card>
-                }
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'center',
-                    }}
-                    open={this.state.open}
-                    autoHideDuration={6000}
-                    message={this.state.message}
-                    onClose={() => this.setState({open: false})}
-                />
+
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                        }}
+                        open={this.state.open}
+                        autoHideDuration={6000}
+                        message={this.state.message}
+                        onClose={() => this.setState({ open: false })}
+                    />
+                </div>
             </div>
-            </div>
-        
+
         )
     }
 }

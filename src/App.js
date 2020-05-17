@@ -22,16 +22,17 @@ function App() {
       <div>
         <NavBar />
       </div>
+    <div >
     <Router>
      <Route path="/book"><BookList /></Route>
      <Route path="/search"><SearchBook /></Route>
      <Route path="/viewCart"><BookCart /></Route>
      <Route path="/checkout"><Checkout /></Route>
      <Route path="/orderPlace"><OrderPlace /></Route>
-     <Route path="/searchBook"><SearchBookList /></Route>
-     
+     <Route path="/searchBook"><SearchBookList /></Route> 
    </Router>
-    <div >
+      </div>
+      <div >
       <Footbar />
       </div>
    
