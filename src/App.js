@@ -22,7 +22,7 @@ function App() {
       <div>
         <NavBar />
       </div>
-    <div >
+    <div style={{minHeight: '100vh'}}>
     <Router>
      <Route path="/book"><BookList /></Route>
      <Route path="/search"><SearchBook /></Route>

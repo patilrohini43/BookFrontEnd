@@ -27,7 +27,7 @@ class BookList extends React.Component {
             sortLowToHigh: [],
             image: '',
             selectValue: "",
-            activePage: 0,
+            activePage: 1,
             totalPages: null,
             itemsCountPerPage: null,
             totalItemsCount: null

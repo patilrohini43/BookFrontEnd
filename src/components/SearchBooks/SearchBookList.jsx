@@ -81,7 +81,7 @@ const classes = useStyles();
 const [selectValue,setSelectValue]=useState('unSorted')
 const [name,setName]=useState('')
 const [searchData, setSearchData] = useState([]);
-const [activepage,setActivePage]=useState(0)
+const [activepage,setActivePage]=useState(1)
 const [totalpage,setTotalPage]=useState(null)
 const [itemsCountPerPage,setitemsCountPerPage]=useState(null)
 const [totalItemsCount,settotalItemsCount]=useState(null)
@@ -96,14 +96,12 @@ const goBack = () => history.push('/book');
         let name = (new URLSearchParams(window.location.search)).get("name")
         console.log(name+"searchh")
         setName(name)
-        getSearchList(name,activepage,selectValue)
+        getSearchList(name,activepage-1,selectValue)
     }, [])
 
   
 
     const getSearchList=(name,page,selectValue)=>{
-       // http://localhost:8081/bookname/searchBook/a/0/8
-       console.log(page+"dddddddddddd")
         httpService.getAxios(`bookname/searchBook/${name}/${page}/12/${selectValue}`)
         .then((response) =>{
            /// var item=JSON.parse(JSON.stringify(response.data))
