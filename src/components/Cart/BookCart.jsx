@@ -10,6 +10,9 @@ import * as httpService from '/home/rohini/Pictures/Reactproject/bookstore/src/s
 import Snackbar from '@material-ui/core/Snackbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import { useHistory } from "react-router-dom"
+import NavBar from '../NavBar/NavBar.jsx';
+import Skeleton from "@material-ui/lab/Skeleton";
+import cartService from '../../service/cartService.js';
 
 
 
@@ -20,14 +23,15 @@ const useStyles = makeStyles(theme => ({
         width: '30em',
         [theme.breakpoints.up('md')]: {
             minWidth: '50em',
+            marginBottom: '2%',
         },
     },
     dividerFullWidth: {
         margin: `5px 0 0 ${theme.spacing(2)}px`,
-      },
-      dividerInset: {
+    },
+    dividerInset: {
         margin: `5px 0 0 ${theme.spacing(9)}px`,
-      },
+    },
 
     cardAction: {
         display: 'flex',
@@ -46,12 +50,13 @@ const useStyles = makeStyles(theme => ({
     buttonDiv: {
         display: 'flex',
         flexDirection: 'row',
+        marginTop: '2%'
     },
     paper: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop:'2%'
+        marginTop: '2%'
         // '& > *': {
         //   margin: theme.spacing(1),
         //   width:'100%',
@@ -59,12 +64,12 @@ const useStyles = makeStyles(theme => ({
         // },
     },
     mainDiv: {
-        display: 'flex',
-        justifyContent: 'flex-start',
+        //     display: 'flex',
+        //   justifyContent: 'flex-start',
         [theme.breakpoints.up('sm')]: {
             marginLeft: theme.spacing(3),
             paddingLeft: '10%',
-            paddingTop: '2%',
+
         },
     },
     typoDiv: {
@@ -82,8 +87,14 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         justifyContent: 'flex-start',
         paddingLeft: '2%',
+        fontSize: '16px'
     },
+    cartDiv: {
+        height: 'fit-content',
+        maxHeight: '60vh',
+        overflowY: 'scroll',
 
+    },
     customerDiv: {
         marginTop: '3%',
     },
@@ -103,19 +114,14 @@ const useStyles = makeStyles(theme => ({
         marginBottom: 12,
     },
 }));
-export default function BookCart() {
+export default function BookCart(props) {
     const classes = useStyles();
-    const [count, setCount] = useState(0);
     const [cartData, setCartData] = useState([]);
-    const [customerData, setCustomerData] = useState([]);
     const [open, setOpen] = useState(false)
     const [message, setMessage] = useState('');
-    const [openForm, setOpenForm] = useState(false);
-    const [value, setValue] = React.useState({
-        addressId: ''
-    });
-    const [error, setError] = React.useState(false);
-    const [helperText, setHelperText] = React.useState('Choose wisely');
+
+    const[cartCount,setCartCount]=useState(0)
+    const [loading ,setLoading]=useState(true)
 
 
     useEffect(() => {
@@ -123,22 +129,15 @@ export default function BookCart() {
         getAddressDetail()
     }, [])
 
-    const handleRadioChange = (e) => {
-        console.log(e.target.name + "======" + e.target.value)
-        setValue({ ...value, [e.target.name]: e.target.value });
-    };
-
 
     function getCart() {
-        httpService.getAxios('cart/getAllCart/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.SkJVXXp-unSNovqHE14ml3Kw7fcoLxLIdu4DZ5DLotQ')
+        cartService.getCarts()
             .then((response) => {
                 console.log(response)
                 console.log(response.data)
-                response.data.map((item => {
-                    localStorage.setItem('cartId',item.id)
-                    console.log(item.items.length)
-                    setCartData(item.items)
-                }))
+                setCartCount(response.data.length)
+                setCartData(response.data)
+                setLoading(false)
             }).catch(function (error) {
                 console.log(error);
             })
@@ -149,23 +148,20 @@ export default function BookCart() {
             .then((response) => {
                 console.log(response)
                 console.log(response.data)
-                setCustomerData(response.data)
+            
             }).catch(function (error) {
                 console.log(error);
             })
     }
 
     const removeCart = (value) => {
-        console.log("hii" + value)
         httpService.deleteAxios('cart/deleteFromCart/' + value)
             .then((response) => {
-                console.log(response.data.statusMessage)
                 setMessage(response.data.statusMessage)
                 setOpen(true)
-                console.log(cartData)
                 let newData = cartData.filter(item => item.cartId !== value)
                 setCartData(newData)
-
+                getCart()
             }).catch(function (error) {
                 console.log(error);
             })
@@ -174,7 +170,6 @@ export default function BookCart() {
     const incrementCount = (id) => {
         httpService.putAxios('cart/increMentQuantity/' + id)
             .then((response) => {
-                console.log(response.data.statusMessage)
                 setOpen(true)
                 setMessage(response.data.statusMessage)
             })
@@ -184,27 +179,13 @@ export default function BookCart() {
     const decrementCount = (id) => {
         httpService.putAxios('cart/decreMentQuantity/' + id)
             .then((response) => {
-                console.log(response.data.statusMessage)
                 setOpen(true)
                 setMessage(response.data.statusMessage)
             })
         getCart()
     }
 
-    const addCustomerDetails = (data) => {
-        console.log(data + "dddddddddddd" + JSON.stringify(data))
-        httpService.postAxios('user/adderssDetail/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.SkJVXXp-unSNovqHE14ml3Kw7fcoLxLIdu4DZ5DLotQ', data)
-            .then((response) => {
-                console.log(response)
-                console.log(response.data)
-            }).catch(function (error) {
-                console.log(error);
-            })
-    }
 
-    function showForm() {
-        setOpenForm(true)
-    }
 
     const history = useHistory();
     const goBack = () => history.push('/book');
@@ -212,46 +193,119 @@ export default function BookCart() {
 
     return (
         <div className={classes.mainDiv}>
+            <NavBar cartCount={cartCount} />
             <div><div className={classes.buttonBack}><Tooltip title="Go Back" arrow><Button onClick={goBack}>Back <b></b></Button></Tooltip></div>
 
                 <div>
+
                     <Card className={classes.root} >
                         <CardContent className={classes.cardContent}>
-                            <Typography className={classes.titleCart} variant="h6" gutterBottom>My Cart </Typography>
-                            <div>
+                            {
+                                loading ? (
+                                    <React.Fragment>
+                                        <Skeleton animation="wave" height={20} width="5em" />
+                                    </React.Fragment>
+                                ) : (
+                                        <Typography className={classes.titleCart} variant="subtitle2" gutterBottom>My Cart ({cartData.length})</Typography>
+                                    )
+                            }
+
+                            <div className={classes.cartDiv}>
                                 {
-                                    cartData.map((item, key) =>
+                                    ( loading ? Array.from(new Array(3)) : cartData).map((item, key) => 
+                                   // cartData.map((item, key) =>
+
                                         <div className={classes.image} key={key}>
+                                            {
+                                                loading ? (
+                                                    <Skeleton
+                                                        animation="wave"
+                                                        style={{ width: '7em', height: '12em', marginTop: '-2em' }}
+                                                    />
+                                                ) : (
+                                                        <div style={{ padding: '2%' }}>
+                                                            <img style={{ height: '9em', width: '7em' }} src={`http://localhost:8081/bookname/bookListImages/${item.book.bookId}`} alt="item" />
+                                                        </div>
+                                                    )}
 
-
-                                            <div style={{ padding: '2%' }}>
-                                                <img style={{ height: '9em', width: '7em' }} src={`http://localhost:8081/bookname/bookListImages/${item.book.bookId}`} alt="item" />
-                                            </div>
                                             <div style={{ textAlign: 'start', padding: '2%' }}>
-                                                <Typography variant="subtitle2"> {item.book.bookName}</Typography>
-                                                <Typography variant="caption" display="block" color="textSecondary">{item.book.author}</Typography>
-                                                <Typography variant="caption" display="block" color="black">  Rs.{item.book.price}</Typography>
+                                                {loading ? (
+                                                    <React.Fragment>
+                                                        <Skeleton
+                                                            animation="wave"
+                                                            height={10}
+                                                        // style={{ marginBottom: 6 }}
+                                                        />
+                                                        <Skeleton animation="wave" height={15} width="12em" />
+                                                    </React.Fragment>
+                                                ) : (
+                                                        <div>
+                                                            <Typography variant="subtitle2"> {item.book.bookName}</Typography>
+                                                            <Typography variant="caption" display="block" color="textSecondary">{item.book.author}</Typography>
+                                                            <Typography variant="caption" display="block" color="black">  Rs.{item.book.price}</Typography>
+                                                        </div>
+                                                    )}
                                                 <div className={classes.buttonDiv}>
-                                                    <ButtonGroup size="small" aria-label="small outlined button group">
-                                                        <Button onClick={incrementCount.bind(null, item.cartId)}>+</Button>
+                                                    {loading ? (
+                                                        <React.Fragment>
+                                                            <Skeleton
+                                                                animation="wave"
+                                                                height={10}
+                                                                style={{ marginBottom: 6 }}
+                                                            />
+                                                            <Skeleton animation="wave" height={10} width="80%" />
+                                                        </React.Fragment>
+                                                    ) :
+                                                        (<ButtonGroup size="small" aria-label="small outlined button group">
+                                                            <Button onClick={incrementCount.bind(null, item.cartId)}>+</Button>
 
-                                                        <Button >{item.quantity}</Button>
+                                                            <Button >{item.quantity}</Button>
 
-                                                        <Button onClick={decrementCount.bind(null, item.cartId)}>-</Button>
-                                                    </ButtonGroup>
+                                                            <Button onClick={decrementCount.bind(null, item.cartId)}>-</Button>
+                                                        </ButtonGroup>
+                                                        )}
+                                                    <div>
+                                                        {
+                                                            loading ? (
+                                                                <React.Fragment>
 
-                                                    <Button size="small" style={{ marginLeft: '2%' }} onClick={removeCart.bind(null, item.cartId)}>Remove</Button>
+                                                                    <Skeleton animation="wave" height={15} width="5em" style={{ marginTop: "1em" }} />
+                                                                </React.Fragment>
 
+                                                            ) : (
+                                                                    <Button size="small" style={{ marginLeft: '2%' }} onClick={removeCart.bind(null, item.cartId)}>Remove</Button>
+                                                                )
+                                                        }
+
+                                                    </div>
                                                 </div>
+
                                             </div>
+
+
 
                                         </div>
+
+
                                     )}
                             </div>
 
                         </CardContent>
                         <CardActions className={classes.cardAction}>
-                            <Button size="small" variant="contained" color="primary" style={{ width: '27%' }}  onClick={event =>  window.location.href=`/checkout`}>Place Order</Button>
+                            {
+                                loading ? (
+                                    <Skeleton
+                                        animation="wave"
+                                        variant="Rectangle"
+                                        style={{width:"10em"}}
+                                        height={20}
+                                    />
+                                )
+                                    : (
+                                        <Button size="small" variant="contained" color="primary" style={{ width: '27%' }} onClick={event => window.location.href = `/checkout`}>Place Order</Button>
+                                    )
+                            }
+
                         </CardActions>
                     </Card>
 
@@ -270,3 +324,14 @@ export default function BookCart() {
         </div>
     )
 }
+
+
+// export default function BookCart() {
+//     console.log("jiiiii")
+//     return (
+//         <div>
+//             <Media loading />
+//             <Media />
+//         </div>
+//     );
+// }

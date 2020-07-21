@@ -1,0 +1,50 @@
+.mainDiv{
+    padding: 0;
+    margin-top: 5%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+.fieldDiv{
+    width: 30%;
+    padding: 6%;
+    border: 1px solid blue;
+    border-radius: 10px;
+}
+.field{
+    display: flex;
+    flex-direction: column;
+}
+.Button{
+    justify-content: center;
+    display: flex;
+    margin-top: 3%;
+}
+.buttonField{
+        width: 40%;
+        border-radius: 10px;
+}
+.image{
+    height: 100px;
+}
+.imageDiv{
+    position: absolute;
+    margin-top: -4%;
+}
+.forgotButton{
+    display: flex;
+    justify-content: flex-end;
+}
+@media only screen and (max-width: 599px) {
+    .fieldDiv{
+        width: 60%;
+    }
+    .image {
+        height: 70px;
+    }
+    .imageDiv{
+        position: absolute;
+        margin-top: -5%;
+    }
+  }
+

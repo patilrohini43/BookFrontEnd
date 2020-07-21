@@ -5,7 +5,6 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import ButtonGroup from "@material-ui/core/ButtonGroup";
 import * as httpService from '/home/rohini/Pictures/Reactproject/bookstore/src/service/httpService.js'
 import Snackbar from '@material-ui/core/Snackbar';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -14,9 +13,7 @@ import CustomerDetails from '../CustomerForm/CustomerDetails';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormLabel from '@material-ui/core/FormLabel';
+import NavBar from '../NavBar/NavBar.jsx';
 import Divider from '@material-ui/core/Divider';
 import bookService from '/home/rohini/Pictures/Reactproject/bookstore/src/service/bookService';
 
@@ -60,19 +57,11 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: '2%'
-        // '& > *': {
-        //   margin: theme.spacing(1),
-        //   width:'100%',
-        //   height: theme.spacing(10),
-        // },
     },
     mainDiv: {
-        display: 'flex',
-        justifyContent: 'flex-start',
+    
         [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing(3),
-            paddingLeft: '10%',
-            paddingTop: '2%',
+            marginLeft:'7em'
         },
     },
     typoDiv: {
@@ -90,6 +79,10 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         justifyContent: 'flex-start',
         paddingLeft: '2%',
+    },
+    orderContent:{
+        overflowY:'scroll',
+        maxHeight:'45vh'
     },
 
     customerDiv: {
@@ -117,8 +110,7 @@ const useStyles = makeStyles(theme => ({
 }));
 export default function Checkout() {
     const classes = useStyles();
-    const [count, setCount] = useState(0);
-    const [orderPrice, setOrderPrice] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
     const [cartData, setCartData] = useState([]);
     const [customerData, setCustomerData] = useState([]);
     const [open, setOpen] = useState(false)
@@ -128,12 +120,8 @@ export default function Checkout() {
         addressId: ''
     });
     const [orderId, setOrderID] = useState('')
-    const [error, setError] = React.useState(false);
-    const [helperText, setHelperText] = React.useState('Choose wisely');
-
 
     useEffect(() => {
-        // getCart()
         getAddressDetail()
     }, [])
 
@@ -143,35 +131,22 @@ export default function Checkout() {
     };
 
 
-    // function getCart() {
-    //     httpService.getAxios('cart/getAllCart/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.SkJVXXp-unSNovqHE14ml3Kw7fcoLxLIdu4DZ5DLotQ')
-    //         .then((response) => {
-    //             console.log(response)
-    //             console.log(response.data)
-    //             response.data.map((item => {
-    //                 setCartData(item.items)
-    //             }))
-    //         }).catch(function (error) {
-    //             console.log(error);
-    //         })
-    // }
-
     function getOrderDetails(orderId) {
         console.log(orderId)
+        setOrderID(orderId)
+       
         httpService.get('order?orderId=' + orderId)
             .then((response) => {
                 console.log(response)
                 console.log(response.data)
-                setOrderPrice(response.data)
-               // setCartData(response.data)
-                response.data.map((item) => {
-                    console.log(item.cart.items)
-                    setCartData(item.cart.items)
-                    item.cart.items.map((items) => {
-                        console.log(items.cartId+"nooo"+JSON.stringify(items.book))
-                      console.log(items.book.bookId)
-                    })
-                })
+                setCartData(response.data)
+                var sum = 0;
+                response.data.map(item=>
+                   // console.log(item.quantity * item.book.price+"totlllllllll")
+                     sum +=item.quantity * item.book.price
+                    )
+                    setTotalPrice(sum)
+               
             }).catch(function (error) {
                 console.log(error);
             })
@@ -206,32 +181,13 @@ export default function Checkout() {
             })
     }
 
-    const incrementCount = (id) => {
-        httpService.putAxios('cart/increMentQuantity/' + id)
-            .then((response) => {
-                console.log(response.data.statusMessage)
-                setOpen(true)
-                setMessage(response.data.statusMessage)
-            })
-        // getCart()
-    }
-
-    const decrementCount = (id) => {
-        httpService.putAxios('cart/decreMentQuantity/' + id)
-            .then((response) => {
-                console.log(response.data.statusMessage)
-                setOpen(true)
-                setMessage(response.data.statusMessage)
-            })
-        // getCart()
-    }
-
     const addCustomerDetails = (data) => {
         console.log(data + "dddddddddddd" + JSON.stringify(data))
         httpService.postAxios('user/adderssDetail/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.SkJVXXp-unSNovqHE14ml3Kw7fcoLxLIdu4DZ5DLotQ', data)
             .then((response) => {
                 console.log(response)
                 console.log(response.data)
+               
             }).catch(function (error) {
                 console.log(error);
             })
@@ -240,7 +196,7 @@ export default function Checkout() {
     const createOrder = () => {
         var cartId = localStorage.getItem('cartId')
         console.log(cartId + "address" + value.addressId)
-        httpService.post('order?addressId=' + value.addressId + '&cartId=' + cartId, null)
+        httpService.post('order?addressId=' + value.addressId , null)
             .then((response) => {
                 console.log(response)
                 console.log(response.data.statusMessage)
@@ -252,17 +208,13 @@ export default function Checkout() {
                 console.log(error);
             })
     }
-    function showForm() {
-        setOpenForm(true)
-    }
+ 
 
   const OrderPlace=(orderId)=>{
-       // window.location.href = `/orderPlace`
-        console.log(orderId)
+     
         httpService.put('order?orderId='+orderId,null)
         .then((response) => {
-            console.log(response)
-            console.log(response.data.statusMessage)
+           
             setOpen(true)
             setOpenForm(true)
             setMessage(response.data.statusMessage)
@@ -278,6 +230,7 @@ export default function Checkout() {
 
     return (
         <div className={classes.mainDiv}>
+            <NavBar />
             <div><div className={classes.buttonBack}><Tooltip title="Go Back" arrow><Button onClick={goBack}>Back <b></b></Button></Tooltip></div>
                 <div className={classes.customerDiv}>
                     <Card className={classes.root}>
@@ -343,7 +296,7 @@ export default function Checkout() {
                         <CardContent className={classes.cardContent}>
                             <Typography className={classes.titleCart} variant="subtitle2" gutterBottom>Order Summary </Typography>
 
-                            <div>
+                            <div className={classes.orderContent}>
                                 {
                                     cartData.map((item, key) =>
                                         <div className={classes.image} key={key}>
@@ -376,15 +329,13 @@ export default function Checkout() {
                          
 
                         </CardContent>
-                        {
-                            orderPrice.map(item=>
-        
+                        { openForm ? 
                         <CardActions className={classes.cardAction}>
-                             <Typography  variant="subtitle2" gutterBottom>Total Price:{item.totalPrce}</Typography>
-                            <Button size="small" variant="contained" color="primary" style={{ width: '27%' }} onClick={OrderPlace.bind(null,item.orderId)}>Continue</Button>
+                             <Typography  variant="subtitle2" gutterBottom>Total Price:{totalPrice}</Typography>
+                            <Button size="small" variant="contained" color="primary" style={{ width: '27%' }} onClick={OrderPlace.bind(null,orderId)}>Continue</Button>
                         </CardActions>
-                              )
-                            }
+                        :null
+                        }
                     </Card>
 
                 </div>

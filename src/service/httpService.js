@@ -82,7 +82,9 @@ const baseUrl='http://localhost:8081/'
       method: 'PUT',
       data:data,
       headers: {
-        'content-type': 'application/json', 
+        'Accept': 'application/json',
+        
+      //'Access-Control-Expose-Headers': 'Token'
         'token':localStorage.getItem('token')
       },
     })

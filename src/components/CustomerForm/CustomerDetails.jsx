@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import * as httpService from '/home/rohini/Pictures/Reactproject/bookstore/src/service/httpService.js'
 import Typography from '@material-ui/core/Typography';
 import { useForm } from "react-hook-form";
 import Button from '@material-ui/core/Button';
 import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
-import Card from '@material-ui/core/Card';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -68,16 +65,10 @@ const useStyles = makeStyles((theme) => ({
 function CustomerDetails(props) {
     const classes = useStyles();
   //  const [value, setValue] = React.useState('female');
-    const { register, handleSubmit, errors } = useForm();
+    const { handleSubmit } = useForm();
     const [customerDetails, setCustomerDetails] = useState(
         { Name: '', mobileNumber: '', pinCode: '', address: '', locality: '', city: '' ,landMark:'',type:''});  
-      const [showLoading, setShowLoading] = useState(false);  
       const [openForm,setOpenForm] = useState(false);
-
-
-    // const handleChange = (event) => {
-    //     setValue(event.target.value);
-    // };
 
 
    const onChange = (e) => {  
@@ -125,7 +116,7 @@ function CustomerDetails(props) {
                 <div className={classes.root} >
                     <TextField id="outlined-basic" className={classes.textSize} variant="outlined"
                         size="small"
-                        name="Name" id="Name" placeholder="Name" value={customerDetails.Name} onChange={ onChange }
+                        name="Name"  placeholder="Name" value={customerDetails.Name} onChange={ onChange }
                         inputProps={{ style: { fontSize: '12px' } }}
                     />
 
@@ -133,33 +124,33 @@ function CustomerDetails(props) {
                      placeholder="Phone No"
                      variant="outlined"
                      size="small"
-                     name="mobileNumber" id="mobileNumber" value={customerDetails.mobileNumber} onChange={ onChange }
+                     name="mobileNumber" value={customerDetails.mobileNumber} onChange={ onChange }
                      inputProps={{ style: { fontSize: '12px' } }}
                     />
                 </div>
                 <div className={classes.root}>
                     <TextField id="outlined-basic" placeholder="PinCode" variant="outlined" size="small"
-                      name="pinCode" id="pinCode" value={customerDetails.pinCode} onChange={ onChange }
+                      name="pinCode"  value={customerDetails.pinCode} onChange={ onChange }
                         inputProps={{ style: { fontSize: '12px' } }}
                     />
                     <TextField id="outlined-basic" placeholder="Locality" variant="outlined" size="small"
-                      name="locality" id="locality" value={customerDetails.locality} onChange={ onChange }
+                      name="locality"  value={customerDetails.locality} onChange={ onChange }
                         inputProps={{ style: { fontSize: '12px' } }}
                     />
                 </div>
                 <div className={classes.textField}>
                     <TextField id="outlined-basic" placeholder="Address" variant="outlined"
-                      name="address" id="address" value={customerDetails.address} onChange={ onChange }
+                      name="address"  value={customerDetails.address} onChange={ onChange }
                         inputProps={{ style: { fontSize: '12px' } }}
                     />
                 </div>
                 <div className={classes.root}>
                     <TextField id="outlined-basic" placeholder="City/Town" variant="outlined" size="small"
-                      name="city" id="city" value={customerDetails.city} onChange={ onChange }
+                      name="city" value={customerDetails.city} onChange={ onChange }
                         inputProps={{ style: { fontSize: '12px' } }}
                     />
                     <TextField id="outlined-basic" placeholder="LandMark" variant="outlined" size="small"
-                      name="landMark" id="landMark" value={customerDetails.landMark} onChange={ onChange }
+                      name="landMark"  value={customerDetails.landMark} onChange={ onChange }
                         inputProps={{ style: { fontSize: '12px' } }}
                     />
                 </div>
